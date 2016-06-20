@@ -194,7 +194,7 @@ namespace Accrete
             return Constants.B * Math.Pow(temp, -0.75);
         }
 
-        public static void AccreteDust(ref SolarSystem system, Double seed_mass, Double a, Double e, Double crit_mass, Double body_inner_bound, Double body_outer_bound)
+        public static void AccreteDust(ref SolarSystem system, ref Double seed_mass, Double a, Double e, Double crit_mass, Double body_inner_bound, Double body_outer_bound)
         {
             Double temp_mass;
             Double new_mass = seed_mass;
@@ -247,7 +247,7 @@ namespace Accrete
                         temp = 0.0;
                     e = Math.Sqrt(temp);
                     temp = node1.mass + mass;
-                    AccreteDust(ref system, temp, a3, e, stellar_luminosity_ratio, body_inner_bound, body_outer_bound);
+                    AccreteDust(ref system, ref temp, a3, e, stellar_luminosity_ratio, body_inner_bound, body_outer_bound);
                     node1.a = a3;
                     node1.e = e;
                     node1.mass = temp;
@@ -317,7 +317,7 @@ namespace Accrete
                 system.Callback(".. Injecting protoplanet.\n");
                 system.dust_density = Constants.DUST_DENSITY_COEFF * Math.Sqrt(stellar_mass_ratio) * Math.Exp(-Constants.ALPHA * Math.Pow(a, 1.0 / Constants.N));
                 Double crit_mass = CriticalLimit(a, e, stellar_luminosity_ratio);
-                AccreteDust(ref system, mass, a, e, crit_mass, planetesimal_inner_bound, planetesimal_outer_bound);
+                AccreteDust(ref system, ref mass, a, e, crit_mass, planetesimal_inner_bound, planetesimal_outer_bound);
                 if ((mass != 0.0) && (mass != Constants.PROTOPLANET_MASS))
                     CoalescePlanetesimals(ref system, a, e, mass, crit_mass, stellar_luminosity_ratio, planetesimal_inner_bound, planetesimal_outer_bound);
                 else system.Callback(".. failed due to large neighbor.\n");

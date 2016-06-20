@@ -36,20 +36,17 @@ namespace Accrete
         /// <summary>
         /// Generates the solar system
         /// </summary>
-        public static SolarSystem Generate(Int32 Seed)
+        public static SolarSystem Generate(ref SolarSystem system, Int32? Seed)
         {
-            return Generate(Seed, Int32.MaxValue);
+            return Generate(ref system, Seed, Int32.MaxValue);
         }
 
         /// <summary>
         /// Generates the solar system
         /// </summary>
-        public static SolarSystem Generate(Int32 Seed, Int32 Count)
+        public static SolarSystem Generate(ref SolarSystem system, Int32? Seed, Int32 Count)
         {
-            SolarSystem system = new SolarSystem
-            {
-                random = new Random(Seed)
-            };
+            system.random = Seed != null ? new Random(Seed.Value) : new Random();
             system.stellar_mass_ratio = system.random.Range(0.6, 1.3);
             system.stellar_luminosity_ratio = Enviro.Luminosity(system.stellar_mass_ratio);
             Planet planet = Accretation.DistributePlanetaryMasses(ref system, system.stellar_mass_ratio, system.stellar_luminosity_ratio, 0.0, Accretation.StellarDustLimit(system, system.stellar_mass_ratio));
