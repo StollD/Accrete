@@ -100,7 +100,7 @@ namespace Accrete
                 {
                     file.Write("   Surface Gravity (in Earth gees):      {0:F2}\n", node1.surface_grav);
                     if (node1.boil_point > 0.1)
-                        file.Write("   Boiling point of water (celcius):    {0:F1}\n", (node1.boil_point - Constants.KELVIN_CELCIUS_DIFFERENCE));
+                        file.Write("   Boiling point of water (celcius):     {0:F1}\n", (node1.boil_point - Constants.KELVIN_CELCIUS_DIFFERENCE));
                     if (node1.surface_pressure > 0.00001)
                     {
                         file.Write("   Surface Pressure (in atmospheres):    {0:F3}", (node1.surface_pressure / 1000.0));
@@ -108,11 +108,11 @@ namespace Accrete
                     }
                     file.Write("   Surface temperature (Celcius):        {0:F2}\n", (node1.surface_temp - Constants.KELVIN_CELCIUS_DIFFERENCE));
                     if (node1.hydrosphere > 0.01)
-                        file.Write("   Hydrosphere percentage: {0:F2}\n", (node1.hydrosphere * 100));
+                        file.Write("   Hydrosphere percentage:               {0:F2}\n", (node1.hydrosphere * 100));
                     if (node1.cloud_cover > 0.01)
-                        file.Write("   Cloud cover percentage: {0:F2}\n", (node1.cloud_cover * 100));
+                        file.Write("   Cloud cover percentage:               {0:F2}\n", (node1.cloud_cover * 100));
                     if (node1.ice_cover > 0.01)
-                        file.Write("   Ice cover percentage:   {0:F2}\n", (node1.ice_cover * 100));
+                        file.Write("   Ice cover percentage:                 {0:F2}\n", (node1.ice_cover * 100));
                 }
                 file.Write("   Axial tilt (in degrees):              {0}\n", node1.axial_tilt);
                 file.Write("   Planetary albedo:                     {0:F3}\n", node1.albedo);
