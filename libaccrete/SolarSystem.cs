@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Accrete
 {
@@ -13,7 +14,12 @@ namespace Accrete
         public Double main_seq_life;
         public Double age;
         public Double r_ecosphere;
-        private Random random;
+        public Planet root;
+        public Single anum;
+        public Double r_greenhouse;
+        public Double radians_per_rotation; // TODO: Const?
+        public Boolean spin_resonance;
+        public Random random;
 
         /// <summary>
         /// Initializes a new Solar System with a seed
@@ -22,7 +28,19 @@ namespace Accrete
         public SolarSystem(Int32 seed)
         {
             Seed = seed;
-            random = new Random(seed);
+        }
+
+        /// <summary>
+        /// Generates the solar system
+        /// </summary>
+        public void Generate()
+        {
+            random = new Random(Seed);
+            radians_per_rotation = 2.0 * Math.PI;
+            stellar_mass_ratio = random.Range(0.6, 1.3);
+            stellar_luminosity_ratio = Enviro.Luminosity(stellar_mass_ratio);
+            //planet = distribute_planetary_masses(stellar_mass_ratio, stellar_luminosity_ratio, 0.0, stellar_dust_limit(stellar_mass_ratio));
+            main_seq_life = 1.0E10 * (stellar_mass_ratio / stellar_luminosity_ratio);
         }
     }
 }
