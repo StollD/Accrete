@@ -164,11 +164,13 @@ namespace Accrete
             Double temp = base_angular_velocity + (change_in_angular_velocity*system.age);
             /*   'temp' is now the angular velocity. Now we change from rad/sec to     */
             /*  hours/rotation.                               */
-            temp = 1.0/((temp/system.radians_per_rotation)*Constants.SECONDS_PER_HOUR);
+            temp = 1.0/((temp/SolarSystem.radians_per_rotation)*Constants.SECONDS_PER_HOUR);
             if (!(temp >= orbital_period)) return (temp);
             Double spin_resonance_period = ((1.0 - eccentricity)/(1.0 + eccentricity))*orbital_period;
+            system.Callback("...maybe: " + spin_resonance_period + "\n");
             if (eccentricity > 0.01)
             {
+                system.Callback("...resonance...\n");
                 temp = spin_resonance_period;
                 system.spin_resonance = true;
             }
@@ -275,6 +277,7 @@ namespace Accrete
                     break;
                 default:
                     proportion_const = 10.0;
+                    system.Callback("Error: orbital zone not initialized correctly!\n");
                     break;
             }
             Double mass_in_earth_units = mass * Constants.EARTH_MASSES_PER_SOLAR_MASS;

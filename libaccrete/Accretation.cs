@@ -237,6 +237,7 @@ namespace Accrete
                 }
                 if ((Math.Abs(temp) <= Math.Abs(dist1)) || (Math.Abs(temp) <= Math.Abs(dist2)))
                 {
+                    system.Callback("Collision between two planetesimals!\n");
                     Double a3 = (node1.mass + mass) / (node1.mass / node1.a + mass / a);
                     temp = node1.mass * Math.Sqrt(node1.a) * Math.Sqrt(1.0 - Math.Pow(node1.e, 2.0));
                     temp = temp + mass * Math.Sqrt(a) * Math.Sqrt(Math.Sqrt(1.0 - Math.Pow(e, 2.0)));
@@ -305,12 +306,21 @@ namespace Accrete
                 Double a = system.random.Range(planetesimal_inner_bound, planetesimal_outer_bound);
                 Double e = system.random.Eccentricity();
                 Double mass = Constants.PROTOPLANET_MASS;
-                if (!DustAvailable(system, InnerEffectLimit(system, a, e, mass), OuterEffectLimit(system, a, e, mass))) continue;
+                if (system.verbose)
+                    system.Callback("Checking " + a + " AU.\n");
+                if (!DustAvailable(system, InnerEffectLimit(system, a, e, mass), OuterEffectLimit(system, a, e, mass)))
+                {
+                    if (system.verbose)
+                        system.Callback(".. failed.\n");
+                    continue;
+                }
+                system.Callback(".. Injecting protoplanet.\n");
                 system.dust_density = Constants.DUST_DENSITY_COEFF * Math.Sqrt(stellar_mass_ratio) * Math.Exp(-Constants.ALPHA * Math.Pow(a, 1.0 / Constants.N));
                 Double crit_mass = CriticalLimit(a, e, stellar_luminosity_ratio);
                 AccreteDust(ref system, mass, a, e, crit_mass, planetesimal_inner_bound, planetesimal_outer_bound);
                 if ((mass != 0.0) && (mass != Constants.PROTOPLANET_MASS))
                     CoalescePlanetesimals(ref system, a, e, mass, crit_mass, stellar_luminosity_ratio, planetesimal_inner_bound, planetesimal_outer_bound);
+                else system.Callback(".. failed due to large neighbor.\n");
             }
             return system.planet_head;
         }

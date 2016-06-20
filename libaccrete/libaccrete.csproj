@@ -34,7 +34,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accretation.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Dust.cs" />
     <Compile Include="Enviro.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
