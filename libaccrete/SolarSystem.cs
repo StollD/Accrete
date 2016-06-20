@@ -21,6 +21,8 @@ namespace Accrete
         public Double r_greenhouse;
         public Boolean spin_resonance;
         public Random random;
+        public Boolean verbose = false;
+        public Action<String> Callback = s => { }; 
 
         // Now for some variables internal to the accretion process
         internal Boolean dust_left;
@@ -36,6 +38,14 @@ namespace Accrete
         /// </summary>
         public static SolarSystem Generate(Int32 Seed)
         {
+            return Generate(Seed, Int32.MaxValue);
+        }
+
+        /// <summary>
+        /// Generates the solar system
+        /// </summary>
+        public static SolarSystem Generate(Int32 Seed, Int32 Count)
+        {
             SolarSystem system = new SolarSystem
             {
                 random = new Random(Seed)
@@ -47,7 +57,8 @@ namespace Accrete
             system.age = system.random.Range(1.0E9, (system.main_seq_life >= 6.0E9) ? 6.0E9 : system.main_seq_life);
             system.r_ecosphere = Math.Sqrt(system.stellar_luminosity_ratio);
             system.r_greenhouse = system.r_ecosphere * Constants.GREENHOUSE_EFFECT_CONST;
-            while (planet != null)
+            Int32 i = 0;
+            while (planet != null && i < Count)
             {
                 planet.orbit_zone = Enviro.OrbitalZone(system, planet.a);
                 if (planet.gas_giant)
@@ -89,6 +100,7 @@ namespace Accrete
                     Enviro.IterateSurfaceTemp(system, ref planet);
                 }
                 planet = planet.next_planet;
+                i++;
             }
             return system;
         }
