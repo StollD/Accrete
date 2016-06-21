@@ -36,17 +36,35 @@ namespace Accrete
         /// <summary>
         /// Generates the solar system
         /// </summary>
-        public static SolarSystem Generate(ref SolarSystem system, Int32? Seed)
+        public static void Generate(ref SolarSystem system)
         {
-            return Generate(ref system, Seed, Int32.MaxValue);
+            system.random = new Random();
+            GenerateInternal(ref system, Int32.MaxValue);
         }
 
         /// <summary>
         /// Generates the solar system
         /// </summary>
-        public static SolarSystem Generate(ref SolarSystem system, Int32? Seed, Int32 Count)
+        public static void Generate(ref SolarSystem system, Int32 Count)
         {
-            system.random = Seed != null ? new Random(Seed.Value) : new Random();
+            system.random = new Random();
+            GenerateInternal(ref system, Count);
+        }
+
+        /// <summary>
+        /// Generates the solar system
+        /// </summary>
+        public static void Generate(ref SolarSystem system, Int32 Seed, Int32 Count = Int32.MaxValue)
+        {
+            system.random = new Random(Seed);
+            GenerateInternal(ref system, Count);
+        }
+
+        /// <summary>
+        /// Generates the solar system
+        /// </summary>
+        private static void GenerateInternal(ref SolarSystem system, Int32 Count)
+        {
             system.stellar_mass_ratio = system.random.Range(0.6, 1.3);
             system.stellar_luminosity_ratio = Enviro.Luminosity(system.stellar_mass_ratio);
             Planet planet = Accretation.DistributePlanetaryMasses(ref system, system.stellar_mass_ratio, system.stellar_luminosity_ratio, 0.0, Accretation.StellarDustLimit(system, system.stellar_mass_ratio));
@@ -99,7 +117,6 @@ namespace Accrete
                 planet = planet.next_planet;
                 i++;
             }
-            return system;
         }
     }
 }

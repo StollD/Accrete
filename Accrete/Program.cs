@@ -22,7 +22,10 @@ namespace Accrete
             SolarSystem system = new SolarSystem();
             system.verbose = options.Verbose;
             system.Callback = Console.Write;
-            SolarSystem.Generate(ref system, options.Seed != Int32.MaxValue ? options.Seed : (Int32?) null, options.Count);
+            if (options.Seed != Int32.MinValue)
+                SolarSystem.Generate(ref system, options.Seed, options.Count);
+            else
+                SolarSystem.Generate(ref system, options.Count);
 
             // Save it to file
             StreamWriter file = new StreamWriter(Directory.GetCurrentDirectory() + "/" + options.File, false);
@@ -133,16 +136,16 @@ namespace Accrete
     public class Options
     {
         [Option('s', "seed", DefaultValue = Int32.MinValue, HelpText = "The seed that should be used for the system generation.")]
-        public Int32 Seed { get; set; }
+        public Int32 Seed { get; set; } = Int32.MinValue;
 
         [Option('v', "verbose", DefaultValue = false, HelpText = "Prints all messages to standard output.")]
-        public Boolean Verbose { get; set; }
+        public Boolean Verbose { get; set; } = false;
 
         [Option('f', "file", DefaultValue = "New.System", HelpText = "The file that will store the system information.")]
-        public String File { get; set; }
+        public String File { get; set; } = "New.System";
 
         [Option('c', "count", DefaultValue = Int32.MaxValue, HelpText = "The maximal amount of generated bodies.")]
-        public Int32 Count { get; set; }
+        public Int32 Count { get; set; } = Int32.MaxValue;
 
     }
 }
