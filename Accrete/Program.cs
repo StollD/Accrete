@@ -19,9 +19,7 @@ namespace Accrete
             Parser.Default.ParseArguments(args, options);
 
             // Generate a new Solar System
-            SolarSystem system = new SolarSystem();
-            system.verbose = options.Verbose;
-            system.Callback = Console.Write;
+            SolarSystem system = new SolarSystem(options.Verbose, false, Console.Write);
             if (options.Seed != Int32.MinValue)
                 SolarSystem.Generate(ref system, options.Seed, options.Count);
             else

@@ -16,6 +16,7 @@ namespace Accrete
         public const Double EARTH_ACCELERATION = (981.0);           /* Units of cm/sec2         */
         public const Double EARTH_AXIAL_TILT = (23.4);              /* Units of degrees         */
         public const Double EARTH_EXOSPHERE_TEMP = (1273.0);        /* Units of degrees Kelvin  */
+        public const Double SUN_MASS_IN_EARTH_MASSES = 332775.64;
         public const Double EARTH_MASSES_PER_SOLAR_MASS = (332775.64);
         public const Double EARTH_EFFECTIVE_TEMP = (255.0);         /* Units of degrees Kelvin  */
         public const Double EARTH_ALBEDO = (0.39);
@@ -36,6 +37,7 @@ namespace Accrete
         public const Double SECONDS_PER_HOUR = (3600.0);
         public const Double CM_PER_AU = (1.495978707E13);           /* number of cm in an AU    */
         public const Double CM_PER_KM = (1.0E5);                    /* number of cm in a km     */
+        public const Double KM_PER_AU = CM_PER_AU / CM_PER_KM;
         public const Double CM_PER_METER = (100.0);
         public const Double MILLIBARS_PER_BAR = (1000.0);
         public const Double KELVIN_CELCIUS_DIFFERENCE = (273.0);

@@ -6,7 +6,7 @@ namespace Accrete
     /// <summary>
     /// The definition for a Planet in the System
     /// </summary>
-    public class Planet
+    public class Planet : IComparable<Planet>
     {
         public Double a;                    /* semi-major axis of the orbit (in AU)*/
         public Double e;                    /* eccentricity of the orbit         */
@@ -33,7 +33,13 @@ namespace Accrete
         public Double hydrosphere;          /* fraction of surface covered         */
         public Double cloud_cover;          /* fraction of surface covered         */
         public Double ice_cover;            /* fraction of surface covered         */
-        public List<Planet> bodies_orbiting;
+        public SortedSet<Planet> bodies_orbiting = new SortedSet<Planet>();
+        public Planet first_moon;
         public Planet next_planet;
+
+        public int CompareTo(Planet p)
+        {
+            return (Int32)a - (Int32)p.a;
+        }
     }
 }

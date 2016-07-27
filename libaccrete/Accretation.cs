@@ -265,6 +265,7 @@ namespace Accrete
                 gas_giant = mass >= crit_mass,
                 mass = mass
             };
+            system.bodies.Add(node3);
             if (system.planet_head == null)
             {
                 system.planet_head = node3;
@@ -323,6 +324,49 @@ namespace Accrete
                 else system.Callback(".. failed due to large neighbor.\n");
             }
             return system.planet_head;
+        }
+
+        public static Planet DistributeMoonMasses(ref SolarSystem system, Double planetary_mass, Double plan_radius)
+        {
+            Planet last;
+            Double pmass = planetary_mass * Constants.SUN_MASS_IN_EARTH_MASSES;
+            Double prad = plan_radius / Constants.KM_PER_AU;
+            Double maxdist = Math.Sqrt(pmass) / 200;  /* max. moon distance in AU */
+            Double mindist = prad * system.random.Range(2.5, 10);
+            Double lastrad = mindist;
+            Int32 maxcount = (Int32)Math.Sqrt(pmass * 10 + 5) + 1;
+            Int32 count = 0;
+            Planet head = last = null;
+            pmass *= system.random.Range(0.01, 0.2);
+            maxcount = (Int32)system.random.Range(maxcount / 10, maxcount);
+            maxdist *= system.random.Range(0.5, 1.5);
+            while (pmass > 0.001 && count < maxcount && lastrad < maxdist)
+            {
+                Double maxfac = Math.Sqrt((lastrad - prad) / maxdist) / 8;
+                Double massmin = 1e17 / Constants.EARTH_MASS_IN_GRAMS;
+                Double massmax = system.random.Range(pmass / 1e6, pmass * maxfac);
+                Double mmin = Math.Pow(massmin, 1.0 / 4);
+                Double mmax = Math.Pow(massmax, 1.0 / 4);
+                Double mass = Math.Pow(system.random.Range(mmin, mmax), 4);
+                Double dist = Math.Sqrt(mass) * 50000 / Constants.KM_PER_AU;
+                if (!(mass > massmin)) continue;
+                count++;
+                Planet moon = new Planet
+                {
+                    mass = mass / Constants.SUN_MASS_IN_EARTH_MASSES,
+                    a = system.random.Range(lastrad, lastrad * 1.3)
+                };
+                lastrad = moon.a + dist;
+                moon.e = system.random.Eccentricity();
+                moon.first_moon = null;
+                pmass -= mass * 2;
+                if (last != null)
+                    last.next_planet = moon;
+                else
+                    head = moon;
+                last = moon;
+            }
+            return head;
         }
     }
 }

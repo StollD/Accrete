@@ -185,7 +185,7 @@ namespace Accrete
         /// </summary>
         public static Int32 Inclination(SolarSystem system, Double orbital_radius)
         {
-            Int32 temp = (int) (Math.Pow(orbital_radius, 0.2)*system.random.About(Constants.EARTH_AXIAL_TILT, 0.4));
+            Int32 temp = (Int32) (Math.Pow(orbital_radius, 0.2)*system.random.About(Constants.EARTH_AXIAL_TILT, 0.4));
             return (temp%360);
         }
 
@@ -220,7 +220,7 @@ namespace Accrete
         /// mass is in units of solar masses, and equatorial radius is in units of
         /// kilometers.                                                         
         /// </summary>
-        public static Double MoleculeLimit(double orbital_radius, double mass, double equatorial_radius)
+        public static Double MoleculeLimit(Double orbital_radius, Double mass, Double equatorial_radius)
         {
             Double escape_velocity = EscapeVel(mass, equatorial_radius);
             return ((3.0* Math.Pow(Constants.GAS_RETENTION_THRESHOLD * Constants.CM_PER_METER, 2.0) * Constants.MOLAR_GAS_CONST * Constants.EARTH_EXOSPHERE_TEMP) / Math.Pow(escape_velocity, 2.0));
@@ -498,6 +498,43 @@ namespace Accrete
             planet.ice_cover = ice;
             planet.albedo = albedo;
             planet.surface_temp = surface_temp;
+        }
+
+        public static void IterateSurfaceTemp(SolarSystem system, Planet primary, ref Planet planet)
+        {
+            Double previous_temp;
+            Double albedo = 0;
+            Double water = 0;
+            Double clouds = 0;
+            Double ice = 0;
+            Int32 num_iter = 0;
+
+            Double optical_depth = Opacity(planet.molecule_weight, planet.surface_pressure);
+            Double effective_temp = EffTemp(system.r_ecosphere, primary.a, Constants.EARTH_ALBEDO);
+            Double greenhs_rise = GreenRise(optical_depth, effective_temp, planet.surface_pressure);
+            Double surf1_temp = effective_temp + greenhs_rise;
+            do
+            {
+                previous_temp = surf1_temp;
+                water = HydrosphereFraction(planet.volatile_gas_inventory, planet.radius);
+                clouds = CloudFraction(surf1_temp, planet.molecule_weight, planet.radius, water);
+                ice = IceFraction(water, surf1_temp);
+                if ((surf1_temp >= planet.boil_point) || (surf1_temp <= Constants.FREEZING_POINT_OF_WATER))
+                    water = 0.0;
+                albedo = PlanetAlbedo(system, water, clouds, ice, planet.surface_pressure);
+                if (num_iter++ > 1000)
+                    break;
+                optical_depth = Opacity(planet.molecule_weight, planet.surface_pressure);
+                effective_temp = EffTemp(system.r_ecosphere, primary.a, albedo);
+                greenhs_rise = GreenRise(optical_depth, effective_temp, planet.surface_pressure);
+                surf1_temp = effective_temp + greenhs_rise;
+            } while (Math.Abs(surf1_temp - previous_temp) > 1.0);
+
+            planet.hydrosphere = water;
+            planet.cloud_cover = clouds;
+            planet.ice_cover = ice;
+            planet.albedo = albedo;
+            planet.surface_temp = surf1_temp;
         }
 
     }
