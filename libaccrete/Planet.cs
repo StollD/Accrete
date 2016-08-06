@@ -33,9 +33,16 @@ namespace Accrete
         public Double hydrosphere;          /* fraction of surface covered         */
         public Double cloud_cover;          /* fraction of surface covered         */
         public Double ice_cover;            /* fraction of surface covered         */
-        public SortedSet<Planet> bodies_orbiting = new SortedSet<Planet>();
+        internal SortedSet<Planet> bodies_orbiting = new SortedSet<Planet>();
+        public Planet[] BodiesOrbiting;
         public Planet first_moon;
         public Planet next_planet;
+
+        // Index Accessor
+        public Planet this[Int32 index]
+        {
+            get { return BodiesOrbiting[index]; }
+        }
 
         public int CompareTo(Planet p)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Accrete
@@ -25,7 +26,7 @@ namespace Accrete
 
         // Planetary values
         public Planet planet_head;
-        public SortedSet<Planet> bodies;
+        public Planet[] Bodies;
         public Single anum;
         public Boolean spin_resonance;
 
@@ -43,6 +44,13 @@ namespace Accrete
         internal Double dust_density;
         internal Double cloud_eccentricity;
         internal Dust dust_head;
+        internal SortedSet<Planet> bodies;
+
+        // Index Accessor
+        public Planet this[Int32 index]
+        {
+            get { return Bodies[index]; }
+        }
 
         public SolarSystem(Boolean verbose, Boolean moons, Action<String> callback)
         {
@@ -127,24 +135,16 @@ namespace Accrete
                 planet.molecule_weight = Enviro.MoleculeLimit(planet.a, planet.mass, planet.radius);
                 if ((planet.gas_giant))
                 {
-                    planet.surface_grav = Constants.INCREDIBLY_LARGE_NUMBER;
                     planet.greenhouse_effect = false;
-                    planet.volatile_gas_inventory = Constants.INCREDIBLY_LARGE_NUMBER;
-                    planet.surface_pressure = Constants.INCREDIBLY_LARGE_NUMBER;
-                    planet.boil_point = Constants.INCREDIBLY_LARGE_NUMBER;
                     planet.hydrosphere = Constants.INCREDIBLY_LARGE_NUMBER;
                     planet.albedo = system.random.About(Constants.GAS_GIANT_ALBEDO, 0.1);
-                    planet.surface_temp = Constants.INCREDIBLY_LARGE_NUMBER;
                 }
-                else
-                {
-                    planet.surface_grav = Enviro.Gravity(planet.surface_accel);
-                    planet.greenhouse_effect = Enviro.Greenhouse(planet.orbit_zone, planet.a, system.r_greenhouse);
-                    planet.volatile_gas_inventory = Enviro.VolInventory(system, planet.mass, planet.escape_velocity, planet.rms_velocity, system.stellar_mass_ratio, planet.orbit_zone, planet.greenhouse_effect);
-                    planet.surface_pressure = Enviro.pressure(planet.volatile_gas_inventory, planet.radius, planet.surface_grav);
-                    planet.boil_point = (planet.surface_pressure == 0.0) ? 0.0 : Enviro.BoilingPoint(planet.surface_pressure);
-                    Enviro.IterateSurfaceTemp(system, ref planet);
-                }
+                planet.surface_grav = Enviro.Gravity(planet.surface_accel);
+                planet.greenhouse_effect = Enviro.Greenhouse(planet.orbit_zone, planet.a, system.r_greenhouse);
+                planet.volatile_gas_inventory = Enviro.VolInventory(system, planet.mass, planet.escape_velocity, planet.rms_velocity, system.stellar_mass_ratio, planet.orbit_zone, planet.greenhouse_effect);
+                planet.surface_pressure = Enviro.pressure(planet.volatile_gas_inventory, planet.radius, planet.surface_grav);
+                planet.boil_point = (planet.surface_pressure == 0.0) ? 0.0 : Enviro.BoilingPoint(planet.surface_pressure);
+                Enviro.IterateSurfaceTemp(system, ref planet);
 
                 // Moons
                 if (system.moons)
@@ -180,7 +180,7 @@ namespace Accrete
                         planet.bodies_orbiting.Add(moon);
                         moon = moon.next_planet;
                     }
-
+                    planet.BodiesOrbiting = planet.bodies_orbiting.ToArray();
                 }
 
                 if (i + 1 < Count)
@@ -194,6 +194,7 @@ namespace Accrete
                     system.bodies.RemoveWhere(p => p.a > planet.a);
                 }
             }
+            system.Bodies = system.bodies.ToArray();
         }
     }
 }
