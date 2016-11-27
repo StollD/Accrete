@@ -46,7 +46,7 @@ namespace Accrete
 
         public int CompareTo(Planet p)
         {
-            return (Int32)a - (Int32)p.a;
+            return a - p.a > 0d ? 1 : -1;
         }
     }
 }
